@@ -1,2 +1,1238 @@
 # Kasaino.github.io
 youtuber
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>炎の音 — Kasai no On</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700;900&family=Bebas+Neue&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #cc1111;
+    --red-bright: #ff2222;
+    --red-deep: #7a0000;
+    --crimson: #8b0000;
+    --white: #f8f4f0;
+    --off-white: #ede8e3;
+    --silver: #c8c8d8;
+    --silver-dark: #888898;
+    --dark: #09090e;
+    --dark2: #111118;
+    --dark3: #1a1a24;
+    --accent-gold: #c8952a;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--red-bright);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s, background 0.2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid rgba(204,17,17,0.5);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: transform 0.18s ease, width 0.2s, height 0.2s;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: linear-gradient(to bottom, rgba(9,9,14,0.98), rgba(9,9,14,0));
+    backdrop-filter: blur(2px);
+  }
+  .nav-logo {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.1rem; font-weight: 900;
+    letter-spacing: 0.08em;
+    color: var(--white);
+  }
+  .nav-logo span { color: var(--red-bright); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    color: var(--silver);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0; right: 0;
+    height: 1px; background: var(--red-bright);
+    transform: scaleX(0); transition: transform 0.25s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-yt {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 20px;
+    background: var(--red);
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.8rem; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s, transform 0.15s;
+  }
+  .nav-yt:hover { background: var(--red-bright); transform: scale(1.04); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 0 3rem;
+  }
+
+  /* Animated background lines */
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    overflow: hidden;
+  }
+  .hero-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 60px,
+        rgba(139,0,0,0.04) 60px,
+        rgba(139,0,0,0.04) 61px
+      );
+    animation: bgSlide 20s linear infinite;
+  }
+  @keyframes bgSlide { from { transform: translateX(0); } to { transform: translateX(84px); } }
+
+  .hero-bg-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    right: -100px; top: 50%;
+    transform: translateY(-50%);
+    background: radial-gradient(ellipse, rgba(139,0,0,0.25) 0%, transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:0.7;transform:translateY(-50%) scale(1);} 50%{opacity:1;transform:translateY(-50%) scale(1.08);} }
+
+  .hero-left { position: relative; z-index: 2; padding: 8rem 0 4rem; }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--red-bright);
+    margin-bottom: 1.5rem;
+  }
+  .hero-tag::before {
+    content: ''; width: 30px; height: 1px; background: var(--red-bright);
+  }
+
+  .hero-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(3.5rem, 7vw, 6rem);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    animation: slideUp 0.9s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .hero-jp .kanji-red { color: var(--red-bright); text-shadow: 0 0 40px rgba(255,34,34,0.5); }
+
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    letter-spacing: 0.35em;
+    color: var(--silver);
+    margin-top: 0.5rem;
+    animation: slideUp 0.9s 0.1s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  .hero-desc {
+    font-size: 1rem; font-weight: 300; line-height: 1.8;
+    color: var(--silver-dark);
+    max-width: 440px;
+    margin: 1.8rem 0 2.5rem;
+    animation: slideUp 0.9s 0.2s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .hero-desc strong { color: var(--white); font-weight: 600; }
+
+  .hero-ctas {
+    display: flex; gap: 1rem;
+    animation: slideUp 0.9s 0.3s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .btn-primary {
+    padding: 14px 36px;
+    background: var(--red);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    border: none; cursor: none;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: background 0.2s, transform 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--red-bright); transform: translateY(-2px); }
+
+  .btn-outline {
+    padding: 13px 32px;
+    background: transparent;
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    border: 1.5px solid rgba(200,200,220,0.3);
+    cursor: none;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-outline:hover { border-color: var(--red-bright); color: var(--red-bright); transform: translateY(-2px); }
+
+  /* Hero avatar canvas */
+  .hero-right {
+    position: relative; z-index: 2;
+    display: flex; justify-content: center; align-items: center;
+    padding-top: 6rem;
+  }
+  #heroCanvas {
+    border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+    box-shadow: 0 0 80px rgba(139,0,0,0.4), 0 0 200px rgba(139,0,0,0.15);
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-16px);} }
+
+  .hero-badge {
+    position: absolute;
+    bottom: 80px; right: 30px;
+    width: 90px; height: 90px;
+    border: 1.5px solid var(--red);
+    border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--red-bright);
+    animation: spin 12s linear infinite;
+    text-align: center; line-height: 1.6;
+  }
+  @keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+  .badge-inner {
+    animation: spinReverse 12s linear infinite;
+    text-align: center;
+  }
+  @keyframes spinReverse { from{transform:rotate(0deg);} to{transform:rotate(-360deg);} }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTION COMMON ── */
+  section { position: relative; z-index: 2; }
+
+  .section-tag {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--red-bright);
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 1rem;
+  }
+  .section-tag::after { content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--red); }
+
+  .section-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+  .section-title .accent { color: var(--red-bright); }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    background: var(--dark2);
+    border-top: 1px solid rgba(139,0,0,0.3);
+    border-bottom: 1px solid rgba(139,0,0,0.3);
+    padding: 1.8rem 3rem;
+    display: flex; align-items: center; justify-content: space-around;
+    overflow: hidden;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem; letter-spacing: 0.05em;
+    color: var(--red-bright);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--silver-dark);
+    margin-top: 4px;
+  }
+  .stat-div { width: 1px; height: 50px; background: rgba(139,0,0,0.4); }
+
+  /* ── YOUTUBE SECTION ── */
+  .yt-section {
+    padding: 6rem 3rem;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: center;
+  }
+  .yt-embed {
+    position: relative;
+    background: var(--dark2);
+    border: 1px solid rgba(139,0,0,0.3);
+    border-radius: 4px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    display: flex; align-items: center; justify-content: center;
+    cursor: none;
+    transition: border-color 0.3s;
+  }
+  .yt-embed:hover { border-color: var(--red); }
+  .yt-embed::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(139,0,0,0.15), transparent 60%);
+  }
+  .yt-thumb {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(160deg, #1a0808 0%, #0d0005 60%, #1a0808 100%),
+      repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(139,0,0,0.04) 20px, rgba(139,0,0,0.04) 21px);
+    display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px;
+  }
+  .yt-play {
+    width: 70px; height: 70px;
+    background: var(--red);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 0 0 30px rgba(204,17,17,0.5);
+  }
+  .yt-embed:hover .yt-play { transform: scale(1.1); background: var(--red-bright); }
+  .yt-play::after {
+    content: '';
+    border: 14px solid transparent;
+    border-left: 22px solid #fff;
+    margin-left: 5px;
+  }
+  .yt-channel-name {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.4rem; font-weight: 700;
+    color: var(--white); letter-spacing: 0.05em;
+  }
+  .yt-sub-count { font-size: 0.75rem; color: var(--silver-dark); letter-spacing: 0.15em; }
+
+  .yt-info { }
+  .yt-desc {
+    font-size: 1.05rem; font-weight: 300; line-height: 1.85;
+    color: var(--silver-dark); margin: 1.2rem 0 2rem;
+  }
+  .yt-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 2rem; }
+  .yt-tag {
+    padding: 5px 14px;
+    border: 1px solid rgba(204,17,17,0.4);
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--red-bright);
+    border-radius: 0;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+  .yt-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 32px;
+    background: var(--red);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    text-decoration: none;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: background 0.2s, transform 0.15s;
+    cursor: none;
+  }
+  .yt-btn:hover { background: var(--red-bright); transform: translateY(-2px); }
+  .yt-btn svg { width: 18px; height: 18px; fill: #fff; }
+
+  /* ── MERCH SECTION ── */
+  .merch-section { padding: 6rem 3rem; background: var(--dark2); }
+  .merch-header { text-align: center; margin-bottom: 4rem; }
+  .merch-sub { color: var(--silver-dark); font-size: 1rem; font-weight: 300; margin-top: 0.75rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+  .merch-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1100px; margin: 0 auto;
+  }
+
+  .merch-card {
+    background: var(--dark3);
+    border: 1px solid rgba(139,0,0,0.2);
+    position: relative; overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    cursor: none;
+  }
+  .merch-card:hover { border-color: var(--red); transform: translateY(-6px); }
+  .merch-card.featured {
+    grid-column: span 1;
+    border-color: rgba(204,17,17,0.5);
+  }
+  .merch-card.wide { grid-column: span 2; }
+
+  .merch-badge {
+    position: absolute; top: 12px; left: 12px; z-index: 3;
+    padding: 4px 12px;
+    background: var(--red);
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    color: #fff;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+
+  .merch-visual {
+    height: 260px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .merch-visual canvas { position: relative; z-index: 2; }
+  .merch-visual-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #1a0808, #0d0010);
+  }
+  .merch-visual-glow {
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 60%, rgba(139,0,0,0.25), transparent 70%);
+  }
+
+  .merch-card-body { padding: 1.5rem; }
+  .merch-card-name {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--white); margin-bottom: 4px;
+  }
+  .merch-card-sub { font-size: 0.8rem; color: var(--silver-dark); font-weight: 300; letter-spacing: 0.05em; }
+  .merch-card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .merch-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; letter-spacing: 0.05em;
+    color: var(--red-bright);
+  }
+  .merch-add {
+    padding: 8px 20px;
+    background: transparent;
+    border: 1px solid rgba(204,17,17,0.5);
+    color: var(--red-bright);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    cursor: none;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    transition: background 0.2s, color 0.2s;
+  }
+  .merch-add:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+  /* Wide card inner layout */
+  .merch-wide-inner { display: flex; height: 260px; }
+  .merch-wide-visual { flex: 1; position: relative; overflow: hidden; }
+  .merch-wide-info { flex: 1; padding: 2rem; display: flex; flex-direction: column; justify-content: center; }
+  .merch-wide-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.5rem; font-weight: 900; color: var(--white); margin-bottom: 0.5rem;
+  }
+  .merch-wide-desc { font-size: 0.9rem; font-weight: 300; line-height: 1.7; color: var(--silver-dark); margin-bottom: 1.5rem; }
+
+  /* ── LORE SECTION ── */
+  .lore-section {
+    padding: 6rem 3rem;
+    display: grid; grid-template-columns: 1fr 2fr;
+    gap: 5rem; align-items: start;
+  }
+  .lore-left { position: sticky; top: 8rem; }
+  .lore-decor {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 8rem; font-weight: 900; line-height: 1;
+    color: rgba(139,0,0,0.12);
+    letter-spacing: -0.05em;
+    margin-bottom: 1rem;
+    user-select: none;
+  }
+
+  .lore-cards { display: flex; flex-direction: column; gap: 1.5rem; }
+  .lore-card {
+    background: var(--dark2);
+    border: 1px solid rgba(139,0,0,0.2);
+    padding: 1.8rem;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+  .lore-card:hover { border-color: rgba(139,0,0,0.5); }
+  .lore-card::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: var(--red);
+  }
+  .lore-card-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.75rem; letter-spacing: 0.3em;
+    color: var(--red-bright); margin-bottom: 0.6rem;
+  }
+  .lore-card-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.6rem;
+  }
+  .lore-card-text { font-size: 0.9rem; font-weight: 300; line-height: 1.75; color: var(--silver-dark); }
+
+  /* ── NEWSLETTER ── */
+  .newsletter-section {
+    padding: 5rem 3rem;
+    background: var(--dark2);
+    border-top: 1px solid rgba(139,0,0,0.25);
+    text-align: center;
+  }
+  .nl-form { display: flex; gap: 0; max-width: 480px; margin: 2rem auto 0; }
+  .nl-input {
+    flex: 1;
+    padding: 14px 20px;
+    background: var(--dark3);
+    border: 1px solid rgba(139,0,0,0.3);
+    border-right: none;
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem; font-weight: 400; letter-spacing: 0.05em;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .nl-input::placeholder { color: var(--silver-dark); }
+  .nl-input:focus { border-color: var(--red); }
+  .nl-btn {
+    padding: 14px 28px;
+    background: var(--red);
+    border: 1px solid var(--red);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    cursor: none;
+    transition: background 0.2s;
+  }
+  .nl-btn:hover { background: var(--red-bright); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #050508;
+    padding: 3rem;
+    border-top: 1px solid rgba(139,0,0,0.2);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-logo {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.3rem; font-weight: 900;
+  }
+  .footer-logo span { color: var(--red-bright); }
+  .footer-links { display: flex; gap: 2rem; }
+  .footer-links a { color: var(--silver-dark); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--red-bright); }
+  .footer-copy { font-size: 0.75rem; color: rgba(136,136,152,0.5); letter-spacing: 0.05em; }
+
+  /* Scanline flicker on hover for merch */
+  .merch-card::after {
+    content: '';
+    position: absolute; inset: 0; z-index: 10;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.03) 4px);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .merch-card:hover::after { opacity: 1; }
+
+  /* Section divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(139,0,0,0.4) 30%, rgba(139,0,0,0.4) 70%, transparent);
+    margin: 0 3rem;
+  }
+
+  /* Floating kanji decoration */
+  .kanji-float {
+    position: fixed; right: 2rem; top: 50%;
+    transform: translateY(-50%);
+    writing-mode: vertical-rl;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.75rem; font-weight: 300;
+    letter-spacing: 0.3em;
+    color: rgba(200,149,42,0.25);
+    z-index: 50;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="kanji-float">炎の音 · KASAI NO ON · VTuber · 2024</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">炎<span>の</span>音</div>
+  <ul class="nav-links">
+    <li><a href="#youtube">Channel</a></li>
+    <li><a href="#merch">Merch</a></li>
+    <li><a href="#lore">Lore</a></li>
+  </ul>
+  <a href="https://youtube.com" target="_blank" class="nav-yt">
+    ▶ Subscribe
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-bg-glow"></div>
+  </div>
+
+  <div class="hero-left">
+    <div class="hero-tag">VTuber · 炎の音</div>
+    <div class="hero-jp"><span class="kanji-red">炎</span>の音</div>
+    <div class="hero-name">Kasai no On</div>
+    <p class="hero-desc">
+      Born from flame and silence. The <strong>Sound of Fire</strong> — a lone warrior who streams from the edge of the underworld. Red eyes. White soul. Unbreakable will.
+    </p>
+    <div class="hero-ctas">
+      <a href="#merch" class="btn-primary">Shop Merch</a>
+      <a href="#youtube" class="btn-outline">Watch Now</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <canvas id="heroCanvas" width="340" height="420"></canvas>
+    <div class="hero-badge">
+      <div class="badge-inner">LIVE<br>·<br>KASAI<br>·<br>NO ON<br>·</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num" id="subCount">0</div>
+    <div class="stat-label">Subscribers</div>
+  </div>
+  <div class="stat-div"></div>
+  <div class="stat-item">
+    <div class="stat-num" id="viewCount">0</div>
+    <div class="stat-label">Total Views</div>
+  </div>
+  <div class="stat-div"></div>
+  <div class="stat-item">
+    <div class="stat-num" id="streamCount">0</div>
+    <div class="stat-label">Streams</div>
+  </div>
+  <div class="stat-div"></div>
+  <div class="stat-item">
+    <div class="stat-num">S-TIER</div>
+    <div class="stat-label">Threat Level</div>
+  </div>
+</div>
+
+<!-- YOUTUBE -->
+<section class="yt-section" id="youtube">
+  <div class="yt-embed" onclick="window.open('https://youtube.com','_blank')">
+    <div class="yt-thumb">
+      <div class="yt-play"></div>
+      <div class="yt-channel-name">炎の音</div>
+      <div class="yt-sub-count">KASAI NO ON · YOUTUBE CHANNEL</div>
+    </div>
+  </div>
+
+  <div class="yt-info">
+    <div class="section-tag">YouTube Channel</div>
+    <h2 class="section-title">Watch the <span class="accent">Flame</span> Rise</h2>
+    <p class="yt-desc">
+      Kasai no On streams gaming, lore reveals, and late-night chaos. Every session is a ritual. Every clip is a battle scar. Join the inferno — if you can handle the heat.
+    </p>
+    <div class="yt-tags">
+      <span class="yt-tag">Gaming</span>
+      <span class="yt-tag">Lore Streams</span>
+      <span class="yt-tag">Reaction</span>
+      <span class="yt-tag">Zatsudan</span>
+      <span class="yt-tag">Collabs</span>
+    </div>
+    <a href="https://youtube.com" target="_blank" class="yt-btn">
+      <svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.75 15.5v-7l6.25 3.5-6.25 3.5z"/></svg>
+      Subscribe on YouTube
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MERCH -->
+<section class="merch-section" id="merch">
+  <div class="merch-header">
+    <div class="section-tag" style="justify-content:center;">Official Merch</div>
+    <h2 class="section-title">炎の音 <span class="accent">Collection</span></h2>
+    <p class="merch-sub">Wear the flame. Limited drops. No restocks. Get it before it burns out.</p>
+  </div>
+
+  <div class="merch-grid">
+
+    <!-- Card 1 — Hoodie WIDE -->
+    <div class="merch-card wide">
+      <div class="merch-badge">Best Seller</div>
+      <div class="merch-wide-inner">
+        <div class="merch-wide-visual">
+          <div class="merch-visual-bg"></div>
+          <div class="merch-visual-glow"></div>
+          <canvas id="hoodieCanvas" width="220" height="260" style="position:relative;z-index:2;display:block;margin:0 auto;"></canvas>
+        </div>
+        <div class="merch-wide-info">
+          <div class="merch-card-num" style="font-family:'Bebas Neue';font-size:0.7rem;letter-spacing:0.3em;color:var(--red-bright);margin-bottom:0.5rem;">ITEM 001</div>
+          <div class="merch-wide-title">炎の音 Hoodie</div>
+          <p class="merch-wide-desc">Premium heavyweight fleece. Embroidered kanji on the chest. Hidden rune lining inside hood. Drop-shoulder cut. Available in Bone White + Abyss Black.</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div class="merch-price">$68</div>
+            <button class="merch-add" onclick="addToCart(this,'Hoodie')">+ Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="merch-card featured">
+      <div class="merch-badge">New Drop</div>
+      <div class="merch-visual">
+        <div class="merch-visual-bg"></div>
+        <div class="merch-visual-glow"></div>
+        <canvas id="shirtCanvas" width="160" height="200" style="position:relative;z-index:2;"></canvas>
+      </div>
+      <div class="merch-card-body">
+        <div class="merch-card-name">Eye of Kasai Tee</div>
+        <div class="merch-card-sub">Oversized · Unisex · 100% Cotton</div>
+        <div class="merch-card-footer">
+          <div class="merch-price">$38</div>
+          <button class="merch-add" onclick="addToCart(this,'Tee')">+ Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="merch-card">
+      <div class="merch-visual">
+        <div class="merch-visual-bg"></div>
+        <div class="merch-visual-glow"></div>
+        <canvas id="hatCanvas" width="160" height="200" style="position:relative;z-index:2;"></canvas>
+      </div>
+      <div class="merch-card-body">
+        <div class="merch-card-name">Flame Snapback</div>
+        <div class="merch-card-sub">Embroidered · Adjustable · One Size</div>
+        <div class="merch-card-footer">
+          <div class="merch-price">$34</div>
+          <button class="merch-add" onclick="addToCart(this,'Hat')">+ Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="merch-card">
+      <div class="merch-visual">
+        <div class="merch-visual-bg"></div>
+        <div class="merch-visual-glow"></div>
+        <canvas id="patchCanvas" width="160" height="200" style="position:relative;z-index:2;"></canvas>
+      </div>
+      <div class="merch-card-body">
+        <div class="merch-card-name">Scar Patch Set</div>
+        <div class="merch-card-sub">Iron-on Rune Patches · 5 Pack</div>
+        <div class="merch-card-footer">
+          <div class="merch-price">$18</div>
+          <button class="merch-add" onclick="addToCart(this,'Patches')">+ Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="merch-card">
+      <div class="merch-visual">
+        <div class="merch-visual-bg"></div>
+        <div class="merch-visual-glow"></div>
+        <canvas id="mugCanvas" width="160" height="200" style="position:relative;z-index:2;"></canvas>
+      </div>
+      <div class="merch-card-body">
+        <div class="merch-card-name">炎 Matte Mug</div>
+        <div class="merch-card-sub">11oz · Heat-Reveal Design</div>
+        <div class="merch-card-footer">
+          <div class="merch-price">$22</div>
+          <button class="merch-add" onclick="addToCart(this,'Mug')">+ Cart</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Cart notification -->
+  <div id="cartNotif" style="position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--red);color:#fff;padding:12px 28px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:0.1em;font-size:0.9rem;z-index:200;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);pointer-events:none;">
+    Added to cart — 炎の音
+  </div>
+</section>
+
+<!-- LORE -->
+<section class="lore-section" id="lore">
+  <div class="lore-left">
+    <div class="lore-decor">炎</div>
+    <div class="section-tag">Character Lore</div>
+    <h2 class="section-title">The <span class="accent">Origin</span></h2>
+    <p style="font-size:0.9rem;font-weight:300;line-height:1.8;color:var(--silver-dark);margin-top:1rem;">
+      Every scar tells a story. Every flame hides a name. This is the legend of Kasai no On.
+    </p>
+  </div>
+
+  <div class="lore-cards">
+    <div class="lore-card">
+      <div class="lore-card-num">— Chapter 01</div>
+      <div class="lore-card-title">Before the Fire</div>
+      <p class="lore-card-text">Born in a world where silence was forbidden, Kasai was trained from birth to become a weapon of the shadow council. Silver hair, no name — only a number. The tattoos on his skin were not chosen; they were branded, each rune binding a piece of his power.</p>
+    </div>
+    <div class="lore-card">
+      <div class="lore-card-num">— Chapter 02</div>
+      <div class="lore-card-title">The Red Awakening</div>
+      <p class="lore-card-text">The day his eyes turned crimson was the day the council lost control. The runes burned gold, then red — and Kasai walked out of the compound leaving nothing but ash and one message carved into the gate: 炎の音. The Sound of Fire.</p>
+    </div>
+    <div class="lore-card">
+      <div class="lore-card-num">— Chapter 03</div>
+      <div class="lore-card-title">The Stream Dimension</div>
+      <p class="lore-card-text">Now he exists between worlds, streaming from a pocket dimension of his own making. He appears on screens across the globe — part demon, part legend, fully unhinged. His viewers are his army. His merch is his sigil. Wear it, and the flame finds you.</p>
+    </div>
+    <div class="lore-card">
+      <div class="lore-card-num">— Ongoing</div>
+      <div class="lore-card-title">Join the Flame</div>
+      <p class="lore-card-text">Subscribe to unlock new chapters. Every milestone breaks another seal. At 1M subscribers, the final rune activates. What happens then — not even Kasai knows. The sound of fire grows louder every stream.</p>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter-section">
+  <div class="section-tag" style="justify-content:center;">Stay Connected</div>
+  <h2 class="section-title">Join the <span class="accent">Inferno</span></h2>
+  <p style="color:var(--silver-dark);font-size:0.95rem;font-weight:300;margin-top:0.5rem;">Get drop alerts, stream notifications, and lore updates direct to your inbox.</p>
+  <div class="nl-form">
+    <input class="nl-input" type="email" placeholder="your@email.com" id="nlEmail">
+    <button class="nl-btn" onclick="nlSubmit()">Ignite</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">炎<span>の</span>音 &nbsp;·&nbsp; Kasai no On</div>
+  <div class="footer-links">
+    <a href="https://youtube.com" target="_blank">YouTube</a>
+    <a href="#">Twitter/X</a>
+    <a href="#">Discord</a>
+    <a href="#">Instagram</a>
+  </div>
+  <div class="footer-copy">© 2024 Kasai no On · All rights reserved · 炎の音</div>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+let cx2=0,cy2=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{cx2=e.clientX;cy2=e.clientY;cur.style.left=cx2+'px';cur.style.top=cy2+'px';});
+function lerpCursor(){rx+=(cx2-rx)*0.12;ry+=(cy2-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(lerpCursor);}
+lerpCursor();
+
+// ── STAT COUNTER ──
+function animCount(el,target,suffix=''){
+  let current=0,step=target/80;
+  const iv=setInterval(()=>{
+    current=Math.min(current+step,target);
+    const v=target>=1000?Math.floor(current/1000)+'K':Math.floor(current);
+    el.textContent=v+suffix;
+    if(current>=target)clearInterval(iv);
+  },16);
+}
+setTimeout(()=>{
+  animCount(document.getElementById('subCount'),127000);
+  animCount(document.getElementById('viewCount'),4200000);
+  animCount(document.getElementById('streamCount'),342);
+},400);
+
+// ── CART ──
+function addToCart(btn,item){
+  btn.textContent='✓ Added!';
+  btn.style.background='var(--red)';btn.style.color='#fff';
+  setTimeout(()=>{btn.textContent='+ Cart';btn.style.background='';btn.style.color='';},2000);
+  const n=document.getElementById('cartNotif');
+  n.style.transform='translateX(-50%) translateY(0)';
+  setTimeout(()=>n.style.transform='translateX(-50%) translateY(100px)',2500);
+}
+
+// ── NEWSLETTER ──
+function nlSubmit(){
+  const el=document.getElementById('nlEmail');
+  if(!el.value)return;
+  el.value='';
+  el.placeholder='You\'re in the flame now. 炎';
+  el.style.borderColor='var(--red-bright)';
+  setTimeout(()=>{el.placeholder='your@email.com';el.style.borderColor='';},3000);
+}
+
+// ── HERO AVATAR CANVAS ──
+(function(){
+  const cv=document.getElementById('heroCanvas');
+  const ctx=cv.getContext('2d');
+  const W=340,H=420;
+  let f=0,mx=W/2,my=H*0.38;
+  cv.addEventListener('mousemove',e=>{const r=cv.getBoundingClientRect();mx=(e.clientX-r.left)*(W/r.width);my=(e.clientY-r.top)*(H/r.height);});
+  cv.addEventListener('mouseleave',()=>{mx=W/2;my=H*0.38;});
+
+  function gaze(){
+    const dx=(mx-W/2)/(W/2),dy=(my-H*0.38)/(H/2);
+    const d=Math.sqrt(dx*dx+dy*dy),m=4,c=Math.min(d,1);
+    return{x:dx/(d||1)*m*c,y:dy/(d||1)*m*c};
+  }
+
+  function draw(){
+    f++;ctx.clearRect(0,0,W,H);
+    const bob=Math.sin(f*0.028)*4;
+    const hcx=W/2,hcy=H*0.38+bob;
+
+    // BG
+    const bg=ctx.createRadialGradient(W/2,H*0.4,20,W/2,H*0.5,220);
+    bg.addColorStop(0,'#180008');bg.addColorStop(1,'#07000d');
+    ctx.fillStyle=bg;ctx.beginPath();ctx.roundRect(0,0,W,H,16);ctx.fill();
+
+    // Atmosphere
+    const atm=ctx.createRadialGradient(hcx,hcy,30,hcx,hcy,160);
+    atm.addColorStop(0,'rgba(139,0,0,0.2)');atm.addColorStop(1,'transparent');
+    ctx.fillStyle=atm;ctx.beginPath();ctx.arc(hcx,hcy,160,0,Math.PI*2);ctx.fill();
+
+    // Turtleneck
+    ctx.fillStyle='#101010';
+    ctx.beginPath();
+    ctx.moveTo(hcx-55,hcy+72);
+    ctx.bezierCurveTo(hcx-65,hcy+100,hcx-80,hcy+160,hcx-90,H+10);
+    ctx.lineTo(hcx+90,H+10);
+    ctx.bezierCurveTo(hcx+80,hcy+160,hcx+65,hcy+100,hcx+55,hcy+72);
+    ctx.bezierCurveTo(hcx+35,hcy+62,hcx-35,hcy+62,hcx-55,hcy+72);
+    ctx.closePath();ctx.fill();
+    // Collar ribs
+    ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1.2;
+    for(let i=0;i<6;i++){const ly=hcy+78+i*9;ctx.beginPath();ctx.moveTo(hcx-48+i,ly);ctx.bezierCurveTo(hcx-20,ly+2,hcx+20,ly+2,hcx+48-i,ly);ctx.stroke();}
+
+    // Neck
+    ctx.fillStyle='#e8d5c8';ctx.beginPath();ctx.roundRect(hcx-13,hcy+60,26,18,3);ctx.fill();
+
+    // Hair back
+    const hbg=ctx.createRadialGradient(hcx,hcy-8,15,hcx,hcy-4,78);
+    hbg.addColorStop(0,'#d4d4e0');hbg.addColorStop(1,'#909098');
+    ctx.fillStyle=hbg;ctx.beginPath();ctx.ellipse(hcx,hcy-4,72,80,0,0,Math.PI*2);ctx.fill();
+
+    // Back spikes
+    const bspk=[{sx:-60,sy:-5,ex:-118,ey:-45,w:20},{sx:-48,sy:-28,ex:-95,ey:-88,w:17},{sx:-20,sy:-72,ex:-50,ey:-135,w:15},{sx:8,sy:-76,ex:5,ey:-148,w:17},{sx:38,sy:-65,ex:72,ey:-120,w:17},{sx:62,sy:-22,ex:115,ey:-65,w:18},{sx:65,sy:8,ex:120,ey:10,w:16}];
+    bspk.forEach(sp=>{
+      const sg=ctx.createLinearGradient(hcx+sp.sx,hcy+sp.sy,hcx+sp.ex,hcy+sp.ey);
+      sg.addColorStop(0,'#c0c0cc');sg.addColorStop(1,'#78788a');
+      ctx.fillStyle=sg;
+      ctx.beginPath();ctx.moveTo(hcx+sp.sx-sp.w/2,hcy+sp.sy);
+      ctx.bezierCurveTo(hcx+sp.sx-sp.w*.3,hcy+sp.sy+(sp.ey-sp.sy)*.4,hcx+sp.ex,hcy+sp.ey+3,hcx+sp.ex,hcy+sp.ey);
+      ctx.bezierCurveTo(hcx+sp.ex,hcy+sp.ey-3,hcx+sp.sx+sp.w*.3,hcy+sp.sy+(sp.ey-sp.sy)*.4,hcx+sp.sx+sp.w/2,hcy+sp.sy);
+      ctx.closePath();ctx.fill();
+    });
+
+    // Head
+    const skinG=ctx.createRadialGradient(hcx-12,hcy-12,6,hcx,hcy,68);
+    skinG.addColorStop(0,'#f8ece0');skinG.addColorStop(.5,'#f0ddd0');skinG.addColorStop(1,'#d4b89e');
+    ctx.fillStyle=skinG;
+    ctx.beginPath();
+    ctx.moveTo(hcx-57,hcy-4);ctx.bezierCurveTo(hcx-62,hcy+26,hcx-50,hcy+60,hcx-28,hcy+73);ctx.bezierCurveTo(hcx-10,hcy+82,hcx+10,hcy+82,hcx+28,hcy+73);ctx.bezierCurveTo(hcx+50,hcy+60,hcx+62,hcy+26,hcx+57,hcy-4);ctx.bezierCurveTo(hcx+52,hcy-60,hcx-52,hcy-60,hcx-57,hcy-4);
+    ctx.closePath();ctx.fill();
+
+    // Cheeks
+    for(let s of[-1,1]){const cg=ctx.createRadialGradient(hcx+s*35,hcy+26,0,hcx+s*35,hcy+26,20);cg.addColorStop(0,'rgba(210,140,120,0.15)');cg.addColorStop(1,'transparent');ctx.fillStyle=cg;ctx.beginPath();ctx.ellipse(hcx+s*35,hcy+26,20,13,0,0,Math.PI*2);ctx.fill();}
+
+    // Ears + piercings
+    for(let s of[-1,1]){
+      ctx.fillStyle='#f0ddd0';ctx.beginPath();ctx.ellipse(hcx+s*56,hcy+7,9,13,s*.15,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(180,140,110,0.4)';ctx.beginPath();ctx.ellipse(hcx+s*56,hcy+7,5,8,s*.15,0,Math.PI*2);ctx.fill();
+      for(let p=0;p<2;p++){ctx.fillStyle='#8888a0';ctx.beginPath();ctx.arc(hcx+s*58,hcy+2+p*9,2,0,Math.PI*2);ctx.fill();}
+    }
+
+    // Front hair
+    const fhg=ctx.createLinearGradient(hcx-65,hcy-65,hcx+25,hcy+15);
+    fhg.addColorStop(0,'#e8e8f0');fhg.addColorStop(.4,'#d0d0de');fhg.addColorStop(1,'#a8a8bc');
+    ctx.fillStyle=fhg;ctx.beginPath();ctx.ellipse(hcx,hcy-35,70,42,0,Math.PI,Math.PI*2);ctx.fill();
+
+    // Front bangs
+    const fspk=[{sx:-52,sy:-22,ex:-80,ey:12,w:18,c:'#d8d8e8'},{sx:-32,sy:-15,ex:-55,ey:16,w:15,c:'#ccccd8'},{sx:-12,sy:-10,ex:-24,ey:20,w:13,c:'#d8d8e8'},{sx:8,sy:-8,ex:0,ey:22,w:12,c:'#e0e0ee'},{sx:28,sy:-13,ex:32,ey:18,w:14,c:'#d4d4e4'},{sx:46,sy:-20,ex:62,ey:12,w:15,c:'#c8c8d8'}];
+    fspk.forEach(sp=>{
+      ctx.fillStyle=sp.c;ctx.beginPath();ctx.moveTo(hcx+sp.sx-sp.w/2,hcy+sp.sy);
+      ctx.bezierCurveTo(hcx+sp.sx-sp.w*.2,hcy+sp.sy+(sp.ey-sp.sy)*.5,hcx+sp.ex-2,hcy+sp.ey+3,hcx+sp.ex,hcy+sp.ey);
+      ctx.bezierCurveTo(hcx+sp.ex+2,hcy+sp.ey+3,hcx+sp.sx+sp.w*.2,hcy+sp.sy+(sp.ey-sp.sy)*.5,hcx+sp.sx+sp.w/2,hcy+sp.sy);
+      ctx.closePath();ctx.fill();
+    });
+
+    // Hair shine
+    ctx.save();ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=2.5;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(hcx-18,hcy-65);ctx.bezierCurveTo(hcx+5,hcy-72,hcx+28,hcy-65,hcx+38,hcy-53);ctx.stroke();
+    ctx.restore();
+
+    // Eyebrows
+    ctx.strokeStyle='#505058';ctx.lineWidth=2;ctx.lineCap='round';
+    for(let s of[-1,1]){ctx.beginPath();ctx.moveTo(hcx+s*11,hcy-13);ctx.bezierCurveTo(hcx+s*24,hcy-19,hcx+s*40,hcy-17,hcx+s*49,hcy-11);ctx.stroke();}
+
+    // Eyes
+    const gz=gaze();const eyeY=hcy+3;
+    for(let s of[-1,1]){
+      const ex=hcx+s*27,ew=20,eh=16;
+      ctx.fillStyle='rgba(160,80,80,0.12)';ctx.beginPath();ctx.ellipse(ex,eyeY+3,ew+4,eh+3,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#fdf8f5';ctx.beginPath();ctx.ellipse(ex,eyeY,ew,eh,0,0,Math.PI*2);ctx.fill();
+      ctx.save();ctx.beginPath();ctx.ellipse(ex,eyeY,ew,eh,0,0,Math.PI*2);ctx.clip();
+      // Iris
+      const iris=ctx.createRadialGradient(ex+gz.x,eyeY+gz.y,0,ex+gz.x,eyeY+gz.y,13);
+      iris.addColorStop(0,'#ff4444');iris.addColorStop(.3,'#cc1111');iris.addColorStop(.7,'#8b0000');iris.addColorStop(1,'#3d0000');
+      ctx.fillStyle=iris;ctx.beginPath();ctx.arc(ex+gz.x,eyeY+gz.y,13,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#180000';ctx.beginPath();ctx.ellipse(ex+gz.x,eyeY+gz.y,4.5,6,0,0,Math.PI*2);ctx.fill();
+      ctx.save();ctx.strokeStyle='rgba(255,60,60,0.45)';ctx.lineWidth=1.2;ctx.shadowColor='#ff2222';ctx.shadowBlur=6;ctx.beginPath();ctx.arc(ex+gz.x,eyeY+gz.y,10,0,Math.PI*2);ctx.stroke();ctx.restore();
+      ctx.fillStyle='rgba(255,255,255,0.9)';ctx.beginPath();ctx.ellipse(ex+gz.x-4,eyeY+gz.y-4,3.5,5,0.2,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,0.5)';ctx.beginPath();ctx.arc(ex+gz.x+3,eyeY+gz.y+3,1.8,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+      ctx.fillStyle='#180010';ctx.beginPath();ctx.ellipse(ex,eyeY-eh,ew+2,4.5,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#180010';ctx.beginPath();ctx.ellipse(ex,eyeY+eh,ew+2,3,0,0,Math.PI*2);ctx.fill();
+      // Lashes
+      ctx.strokeStyle='#0a0005';ctx.lineWidth=1.6;ctx.lineCap='round';
+      for(let l=-2;l<=2;l++){ctx.beginPath();ctx.moveTo(ex+l*6,eyeY-eh);ctx.lineTo(ex+l*7-1,eyeY-eh-6-Math.abs(l));ctx.stroke();}
+      ctx.beginPath();ctx.moveTo(ex+s*ew,eyeY);ctx.lineTo(ex+s*(ew+9),eyeY+s*2);ctx.stroke();
+    }
+
+    // Nose
+    ctx.strokeStyle='rgba(170,120,90,0.45)';ctx.lineWidth=1;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(hcx+5,hcy+26);ctx.bezierCurveTo(hcx+8,hcy+34,hcx-3,hcy+36,hcx-5,hcy+33);ctx.stroke();
+
+    // Mouth — slight smirk
+    ctx.fillStyle='#c85065';
+    ctx.beginPath();ctx.moveTo(hcx-15,hcy+52);ctx.bezierCurveTo(hcx-6,hcy+48,hcx+8,hcy+48,hcx+15,hcy+53);ctx.bezierCurveTo(hcx+8,hcy+57,hcx-6,hcy+57,hcx-15,hcy+52);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#b04055';
+    ctx.beginPath();ctx.moveTo(hcx-13,hcy+55);ctx.bezierCurveTo(hcx-4,hcy+61,hcx+4,hcy+61,hcx+13,hcy+55);ctx.bezierCurveTo(hcx+6,hcy+57,hcx-6,hcy+57,hcx-13,hcy+55);ctx.closePath();ctx.fill();
+    // smirk line right
+    ctx.strokeStyle='#903040';ctx.lineWidth=1.2;
+    ctx.beginPath();ctx.moveTo(hcx+15,hcy+53);ctx.bezierCurveTo(hcx+18,hcy+52,hcx+17,hcy+48,hcx+15,hcy+47);ctx.stroke();
+
+    // Sharp teeth flash
+    const teethOpen=2+Math.sin(f*0.04)*1.5;
+    ctx.fillStyle='rgba(5,0,0,0.7)';ctx.beginPath();ctx.ellipse(hcx,hcy+55,11,teethOpen,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#f5f0eb';ctx.beginPath();ctx.ellipse(hcx,hcy+53,9,1.5,0,0,Math.PI*2);ctx.fill();
+
+    // Red orbs ambient
+    for(let i=0;i<3;i++){
+      const a=f*.009+i*2.09,ox=W/2+Math.cos(a)*130,oy=H*.38+bob+Math.sin(a)*55;
+      const og=ctx.createRadialGradient(ox,oy,0,ox,oy,10);
+      og.addColorStop(0,'rgba(180,20,20,0.2)');og.addColorStop(1,'transparent');
+      ctx.fillStyle=og;ctx.beginPath();ctx.arc(ox,oy,10,0,Math.PI*2);ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── MERCH ITEM CANVASES ──
+function drawHoodie(id){
+  const cv=document.getElementById(id);if(!cv)return;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2;
+  let f=0;
+  function loop(){
+    f++;ctx.clearRect(0,0,W,H);
+    // Hoodie body
+    ctx.fillStyle='#f0ece4';
+    ctx.beginPath();
+    ctx.moveTo(cx-55,cy-20);
+    ctx.bezierCurveTo(cx-60,cy+20,cx-55,cy+65,cx-50,cy+90);
+    ctx.lineTo(cx+50,cy+90);
+    ctx.bezierCurveTo(cx+55,cy+65,cx+60,cy+20,cx+55,cy-20);
+    ctx.bezierCurveTo(cx+40,cy-40,cx-40,cy-40,cx-55,cy-20);
+    ctx.closePath();ctx.fill();
+    // Hood
+    ctx.fillStyle='#e8e4dc';
+    ctx.beginPath();ctx.ellipse(cx,cy-50,50,35,0,Math.PI,Math.PI*2);ctx.fill();
+    // Zipper
+    ctx.strokeStyle='rgba(180,160,140,0.5)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(cx,cy-20);ctx.lineTo(cx,cy+60);ctx.stroke();
+    // Chest embroidery — kanji
+    ctx.fillStyle='rgba(180,20,20,0.85)';
+    ctx.font='bold 22px "Noto Serif JP",serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('炎',cx,cy+10);
+    // Sleeve hint
+    for(let s of[-1,1]){ctx.fillStyle='#e8e4dc';ctx.beginPath();ctx.ellipse(cx+s*70,cy+10,20,35,s*0.2,0,Math.PI*2);ctx.fill();}
+    // Subtle glow on kanji
+    const g=ctx.createRadialGradient(cx,cy+10,0,cx,cy+10,30);
+    g.addColorStop(0,'rgba(200,30,30,0.1)');g.addColorStop(1,'transparent');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy+10,30,0,Math.PI*2);ctx.fill();
+    requestAnimationFrame(loop);
+  }loop();
+}
+
+function drawShirt(id){
+  const cv=document.getElementById(id);if(!cv)return;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2;
+  let f=0;
+  function loop(){
+    f++;ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#0d0d12';
+    ctx.beginPath();
+    ctx.moveTo(cx-45,cy-30);
+    ctx.bezierCurveTo(cx-48,cy+10,cx-44,cy+55,cx-40,cy+75);
+    ctx.lineTo(cx+40,cy+75);
+    ctx.bezierCurveTo(cx+44,cy+55,cx+48,cy+10,cx+45,cy-30);
+    ctx.bezierCurveTo(cx+30,cy-42,cx-30,cy-42,cx-45,cy-30);
+    ctx.closePath();ctx.fill();
+    // Neck
+    ctx.fillStyle='#1a1a22';ctx.beginPath();ctx.ellipse(cx,cy-30,18,10,0,0,Math.PI*2);ctx.fill();
+    // Eye graphic
+    const eye=ctx.createRadialGradient(cx,cy+5,2,cx,cy+5,22);
+    eye.addColorStop(0,'#ff2222');eye.addColorStop(.4,'#880000');eye.addColorStop(1,'rgba(100,0,0,0)');
+    ctx.fillStyle=eye;ctx.beginPath();ctx.arc(cx,cy+5,22,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#cc0000';ctx.beginPath();ctx.ellipse(cx,cy+5,14,10,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#050005';ctx.beginPath();ctx.ellipse(cx,cy+5,5,8,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.85)';ctx.beginPath();ctx.ellipse(cx-4,cy+1,3,4,0.2,0,Math.PI*2);ctx.fill();
+    // Sleeves
+    for(let s of[-1,1]){ctx.fillStyle='#0d0d12';ctx.beginPath();ctx.ellipse(cx+s*58,cy-5,16,28,s*0.15,0,Math.PI*2);ctx.fill();}
+    requestAnimationFrame(loop);
+  }loop();
+}
+
+function drawHat(id){
+  const cv=document.getElementById(id);if(!cv)return;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2;
+  let f=0;
+  function loop(){
+    f++;ctx.clearRect(0,0,W,H);
+    // Brim
+    ctx.fillStyle='#0d0d12';ctx.beginPath();ctx.ellipse(cx,cy+20,58,12,0,0,Math.PI*2);ctx.fill();
+    // Crown
+    ctx.beginPath();ctx.moveTo(cx-50,cy+20);ctx.bezierCurveTo(cx-48,cy-35,cx+48,cy-35,cx+50,cy+20);ctx.closePath();ctx.fill();
+    // Front panel seam
+    ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(cx,cy-35);ctx.lineTo(cx,cy+18);ctx.stroke();
+    // Patch
+    ctx.fillStyle='rgba(200,30,30,0.9)';ctx.beginPath();ctx.roundRect(cx-18,cy-15,36,22,3);ctx.fill();
+    ctx.fillStyle='#fff';ctx.font='bold 13px "Noto Serif JP",serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('炎',cx,cy-4);
+    // Snap
+    ctx.fillStyle='#222';ctx.beginPath();ctx.roundRect(cx-10,cy+22,20,6,2);ctx.fill();
+    requestAnimationFrame(loop);
+  }loop();
+}
+
+function drawPatch(id){
+  const cv=document.getElementById(id);if(!cv)return;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2;
+  let f=0;
+  function loop(){
+    f++;ctx.clearRect(0,0,W,H);
+    const patches=[
+      {x:cx-30,y:cy-40,size:24,kanji:'炎',col:'#cc1111'},
+      {x:cx+32,y:cy-30,size:18,kanji:'音',col:'#8b0000'},
+      {x:cx-28,y:cy+20,size:16,kanji:'火',col:'#cc5500'},
+      {x:cx+28,y:cy+25,size:18,kanji:'刃',col:'#990000'},
+      {x:cx+2,y:cy-5,size:20,kanji:'魂',col:'#aa1111'},
+    ];
+    patches.forEach(p=>{
+      // Patch background
+      ctx.fillStyle='#181018';
+      ctx.beginPath();ctx.roundRect(p.x-p.size*0.7,p.y-p.size*0.7,p.size*1.4,p.size*1.4,3);ctx.fill();
+      ctx.strokeStyle=p.col;ctx.lineWidth=1.5;ctx.stroke();
+      // Glow
+      const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size);
+      g.addColorStop(0,p.col.replace(')',',0.15)').replace('rgb','rgba'));g.addColorStop(1,'transparent');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+      // Kanji
+      const pulse=0.85+0.15*Math.sin(f*0.04+patches.indexOf(p));
+      ctx.fillStyle=p.col;ctx.globalAlpha=pulse;
+      ctx.font=`bold ${p.size}px "Noto Serif JP",serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(p.kanji,p.x,p.y+1);ctx.globalAlpha=1;
+    });
+    requestAnimationFrame(loop);
+  }loop();
+}
+
+function drawMug(id){
+  const cv=document.getElementById(id);if(!cv)return;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2;
+  let f=0;
+  function loop(){
+    f++;ctx.clearRect(0,0,W,H);
+    // Mug body
+    ctx.fillStyle='#111118';
+    ctx.beginPath();ctx.moveTo(cx-35,cy-38);ctx.lineTo(cx+35,cy-38);ctx.bezierCurveTo(cx+38,cy-38,cx+40,cy-35,cx+40,cy-32);ctx.lineTo(cx+40,cy+38);ctx.bezierCurveTo(cx+40,cy+44,cx+36,cy+48,cx+32,cy+48);ctx.lineTo(cx-32,cy+48);ctx.bezierCurveTo(cx-36,cy+48,cx-40,cy+44,cx-40,cy+38);ctx.lineTo(cx-40,cy-32);ctx.bezierCurveTo(cx-40,cy-35,cx-38,cy-38,cx-35,cy-38);ctx.closePath();ctx.fill();
+    // Handle
+    ctx.strokeStyle='#111118';ctx.lineWidth=10;ctx.lineCap='round';
+    ctx.beginPath();ctx.arc(cx+52,cy+5,18,Math.PI*.3,Math.PI*1.1);ctx.stroke();
+    ctx.strokeStyle='#1e1e28';ctx.lineWidth=5;ctx.beginPath();ctx.arc(cx+52,cy+5,18,Math.PI*.3,Math.PI*1.1);ctx.stroke();
+    // Mug lip
+    ctx.fillStyle='#1e1e28';ctx.beginPath();ctx.roundRect(cx-41,cy-44,82,12,4);ctx.fill();
+    // Heat reveal design
+    const heat=0.5+0.5*Math.sin(f*0.03);
+    const hg=ctx.createLinearGradient(cx-30,cy-25,cx+30,cy+35);
+    hg.addColorStop(0,`rgba(204,17,17,${heat*0.9})`);hg.addColorStop(1,`rgba(100,0,0,${heat*0.6})`);
+    ctx.fillStyle=hg;
+    ctx.font=`bold 38px "Noto Serif JP",serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('炎',cx,cy+5);
+    // Steam
+    for(let i=0;i<3;i++){
+      const sx=cx-16+i*16,sy=cy-50-((f*0.8+i*20)%30);
+      ctx.strokeStyle=`rgba(200,200,220,${0.15-((f*0.008+i*.15)%0.15)})`;ctx.lineWidth=2;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(sx,sy+8);ctx.bezierCurveTo(sx-5,sy+4,sx+5,sy-2,sx,sy-8);ctx.stroke();
+    }
+    requestAnimationFrame(loop);
+  }loop();
+}
+
+// Init merch canvases
+drawHoodie('hoodieCanvas');
+drawShirt('shirtCanvas');
+drawHat('hatCanvas');
+drawPatch('patchCanvas');
+drawMug('mugCanvas');
+</script>
+</body>
+</html>
